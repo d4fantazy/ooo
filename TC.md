@@ -29,6 +29,26 @@ GRE Tunnel
 | HQ-RTR     | 10.10.10.1/30 |
 | BR-RTR     | 10.10.10.2/30 |
 
-peplixmain
-prograber
-nezlidna
+ovs-vsctl del-br hq-sw
+ovs-vsctl add-br hq-sw
+ovs-vsctl add-port hq-sw ens3 trunk=111,211,811
+ovs-vsctl add-port hq-sw ens4 tag=111
+ovs-vsctl add-port hq-sw ens5 tag=211
+
+hq-rtr
+port ge1
+no service-instance vl100
+no service-instance vl200
+no service-instance vl999
+service-instance vl111
+encapsulation dot1q 111
+rewrite pop 1
+connect ip interface vl100
+service-instance vl211
+encapsulation dot1q 211
+rewrite pop 1
+connect ip interface vl200
+service-instance vl811
+encapsulation dot1q 811
+rewrite pop 1
+connect ip interface vl999
